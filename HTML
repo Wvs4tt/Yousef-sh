@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="اختبار قانون الضمان">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1e2029">
+ 
+    <title>اختبار تفاعلي: قانون الضمان العيني والشخصي</title>
+    <style>
+        body {
+            background-color: #22252d;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+            overscroll-behavior-y: contain; 
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #1e2029;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #333;
+            border-right: 1px solid #333;
+        }
+        header {
+            padding: 15px;
+            border-bottom: 1px solid #3b3f4a;
+            background-color: #2a2d38;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .student-name {
+            font-size: 11px;
+            color: #ccc;
+            text-align: right;
+        }
+        .student-name span {
+            display: block;
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+        .top-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .top-buttons button {
+            background: transparent;
+            border: 1px solid #777;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .stats-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        .stats-text {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .progress-section {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .progress-bar-container span {
+            width: 35px;
+            text-align: left;
+            margin-right: 8px;
+        }
+        .progress-bar {
+            background-color: #3b3f4a;
+            height: 5px;
+            flex: 1; 
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background-color: #4caf50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .main-content {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+        .sidebar {
+            width: 42px;
+            background-color: #1a1c23;
+            border-left: 1px solid #3b3f4a;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .q-number {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .q-green { background-color: #4caf50; color: white; }
+        .q-blue { 
+            background-color: #1e78d9; 
+            color: white; 
+            position: relative;
+        }
+        .q-blue::before {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-right: 8px solid #1e78d9;
+        }
+        .q-gray { background-color: #48546a; color: white; }
+        .question-area {
+            flex: 1;
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            color: #6a9ce0;
+            font-size: 13px;
+            border-bottom: 1px solid #3b3f4a;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .question-text {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+        .option {
+            background-color: #2b2f3a;
+            border: 1px solid #3b3f4a;
+            padding: 12px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .option:hover {
+            background-color: #353a47;
+            border-color: #555;
+        }
+        .option input[type="radio"] {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0 0 0 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #6b7280;
+            background-color: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            position: relative;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+        .option input[type="radio"]:checked {
+            border-color: #1e78d9;
+            background-color: transparent;
+        }
+        .option input[type="radio"]:checked::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid #1e78d9;
+            background-color: transparent;
+        }
+ 
+        footer {
+            padding: 12px 15px;
+            border-top: 1px solid #3b3f4a;
+            background-color: #1e2029;
+            display: flex;
+            gap: 8px;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        footer button {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+        footer button:active { opacity: 0.8; }
+        .btn-secondary {
+            flex: 1;
+            background-color: transparent;
+            border: 1px solid #777;
+            color: white;
+        }
+        .btn-primary {
+            flex: 2;
+            background-color: #1e78d9;
+            color: white;
+        }
+ 
+        .time-slider-bar {
+            background-color: #23262f;
+            border-top: 1px solid #3b3f4a;
+            padding: 12px 15px 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .slider-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .slider-label-text {
+            font-size: 11px;
+            color: #888;
+        }
+        .slider-live-value {
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            background: #1e78d9;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        input[type="range"]#time-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            background: #3b3f4a;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type="range"]#time-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1e78d9;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 0 6px rgba(30,120,217,0.7);
+        }
+        input[type="range"]#time-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1e78d9;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+        .slider-ends {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #555;
+            margin-top: 3px;
+        }
+ 
+        .time-warning { color: #e05050 !important; }
+    </style>
+</head>
+<body>
+ 
+<div class="container">
+    <header>
+        <div class="top-header">
+            <div class="student-name">
+                اسم الطالب
+                <span>Yousef Shaya Ayidh Alqhtani</span>
+            </div>
+            <div class="top-buttons">
+                <button>الملخص</button>
+                <button>الأدوات</button>
+            </div>
+        </div>
+        
+        <div class="stats-area">
+            <div class="stats-text">
+                <div id="q-stats-text">الأسئلة -- / --</div>
+                <div id="time-stats-text">الوقت 120 / 120 (دقيقة)</div>
+            </div>
+            <div class="progress-section">
+                <div class="progress-bar-container">
+                    <div class="progress-bar"><div class="progress-fill" id="question-progress-fill"></div></div>
+                    <span id="question-progress-text">--%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar"><div class="progress-fill" id="time-progress-fill" style="width: 0%;"></div></div>
+                    <span id="time-progress-text">0%</span>
+                </div>
+            </div>
+        </div>
+    </header>
+ 
+    <div class="main-content">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="question-area" id="question-area">
+            <div class="q-header">
+                <span id="q-number-title">س.--</span>
+                <span>اختيارات متعددة</span>
+                <span id="q-grade">درجة السؤال: 1.00</span>
+            </div>
+            <div class="question-text" id="q-text">جاري تحميل السؤال...</div>
+            <div class="options" id="q-options"></div>
+        </div>
+    </div>
+ 
+    <footer>
+        <button class="btn-secondary">علامة السؤال</button>
+        <button class="btn-secondary" id="btn-skip">تخطي</button>
+        <button class="btn-primary" id="btn-next">التالي</button>
+    </footer>
+ 
+    <div class="time-slider-bar">
+        <div class="slider-top">
+            <span class="slider-label-text">⏱ ضبط الوقت المتبقي</span>
+            <span class="slider-live-value" id="slider-live-label">120 دقيقة</span>
+        </div>
+        <input type="range" id="time-slider" min="1" max="120" value="120">
+        <div class="slider-ends">
+            <span>1 دقيقة</span>
+            <span>120 دقيقة</span>
+        </div>
+    </div>
+</div>
+ 
+<script>
+    const questions = [
+        {
+            text: "ما التعريف الأدق لـ'الضمان العيني'؟",
+            options: [
+                "التزام شخصي يتعهد بموجبه شخص ثالث بالوفاء بالدين عند إخفاق المدين",
+                "حق عيني تبعي يُخصَّص بموجبه مال معين ضماناً للوفاء بدين، ويُخوِّل الدائن حق التتبع والأولوية",
+                "اتفاق بين الدائن والمدين على تحديد سقف الدين المستحق",
+                "إجراء قضائي بالحجز على أموال المدين تحفظياً"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "أيٌّ من التالي يُعدّ من صور الضمان العيني؟",
+            options: [
+                "الكفالة الشخصية",
+                "الحوالة والتجديد",
+                "الرهن الرسمي والرهن الحيازي والامتياز",
+                "الإبراء من الدين"
+            ],
+            correctAnswer: 2
+        },
+        {
+            text: "ما الفرق الجوهري بين الضمان العيني والضمان الشخصي؟",
+            options: [
+                "الضمان الشخصي يُقيَّد بمال معين أما العيني فيشمل ذمة الضامن بأكملها",
+                "الضمان العيني يتعلق بمال بعينه فيُعطي حق التتبع والأولوية، والضمان الشخصي يُضيف ذمة مالية جديدة ضامنة للدين",
+                "لا فرق بينهما من حيث الأثر القانوني",
+                "الضمان العيني يسقط بوفاة المدين بخلاف الضمان الشخصي"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الرهن الرسمي'؟",
+            options: [
+                "رهن يرد على منقول ويستلزم تسليمه للدائن",
+                "عقد يرتب رهناً على عقار دون نقل حيازته للدائن مع قيده في السجل العقاري",
+                "حق يثبت للدائن بقوة القانون دون اتفاق",
+                "اتفاق على حجز منقول معين لدى طرف ثالث"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الشرط الجوهري لانعقاد الرهن الرسمي؟",
+            options: [
+                "تسليم المرهون إلى الدائن المرتهن",
+                "توثيق عقد الرهن وقيده في السجل العقاري",
+                "موافقة المدين الأصلي حتى لو كان الراهن شخصاً آخر",
+                "أن يكون الدين حالَّ الأداء وقت الرهن"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'حق التتبع' في الضمان العيني؟",
+            options: [
+                "حق الدائن في ملاحقة المدين قضائياً في أي دولة",
+                "حق الدائن في التنفيذ على المال المرهون في أيِّ يد انتقل إليها",
+                "حق الدائن في الرجوع على الكفيل بعد استنفاد أموال المدين",
+                "حق الدائن في معرفة مواضع أموال المدين المخفاة"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'حق الأولوية' في الضمان العيني؟",
+            options: [
+                "حق المرتهن في استيفاء دينه من ثمن المال المرهون مقدَّماً على سائر الدائنين العاديين",
+                "حق المرتهن في أخذ المال المرهون ملكاً عند الوفاء",
+                "أولوية الدائن في رفع الدعوى أمام المحاكم",
+                "حق الدائن في تحديد مواعيد السداد"
+            ],
+            correctAnswer: 0
+        },
+        {
+            text: "ما الفرق بين الرهن الرسمي والرهن الحيازي؟",
+            options: [
+                "الرهن الرسمي يرد على المنقول والرهن الحيازي يرد على العقار دائماً",
+                "الرهن الرسمي لا يستلزم نقل الحيازة ويرد أساساً على العقار، أما الحيازي فيستلزم تسليم المرهون للدائن ويرد على المنقول والعقار",
+                "الرهنان متماثلان تماماً ولا فرق بينهما",
+                "الرهن الحيازي يستلزم التسجيل في السجل العقاري فقط"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'حقوق الامتياز'؟",
+            options: [
+                "حقوق تنشأ باتفاق الدائن والمدين على تفضيل دين بعينه",
+                "حقوق يُقررها القانون لبعض الديون تُمنح بموجبها أولوية في الاستيفاء بسبب صفة الدين ذاته",
+                "الحقوق التي يكتسبها المرتهن بمجرد قيد الرهن",
+                "امتيازات قضائية تُمنح للجهات الحكومية في التنفيذ"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "أيٌّ من الديون التالية يُعدّ في الغالب ديناً ممتازاً بقوة القانون؟",
+            options: [
+                "ديون القروض التجارية بين البنوك",
+                "ديون نفقة الزوجة والأولاد ومصاريف الجنازة وأجور العمال",
+                "ديون المساهمين في شركات المساهمة",
+                "ديون التأمين التجاري"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الكفالة' بوصفها ضماناً شخصياً؟",
+            options: [
+                "حق عيني يُقيَّد بمال الكفيل فقط",
+                "عقد يتعهد بموجبه شخص (الكفيل) بالوفاء بدين آخر إذا أخلّ المدين الأصلي بالتزامه",
+                "اتفاق على تجديد الدين بإحلال مدين آخر محل المدين الأصلي",
+                "التزام الكفيل بتقديم ضمان عيني بديلاً عن الضمان الشخصي"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الطابع القانوني لعقد الكفالة؟",
+            options: [
+                "عقد أصلي مستقل بذاته لا علاقة له بالدين الأصلي",
+                "عقد تبعي يستند إلى التزام أصلي صحيح، فإذا بطل الأصل بطلت الكفالة",
+                "عقد عيني يُنشئ حقاً على مال بعينه",
+                "عقد شكلي لا يصح إلا إذا كان مكتوباً بخط يد الكفيل"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الكفالة التضامنية'؟",
+            options: [
+                "كفالة يُقدمها أكثر من كفيل معاً في وقت واحد",
+                "كفالة يُطالَب فيها الكفيل بالوفاء بالدين دون الحاجة إلى إعذار المدين الأصلي أولاً",
+                "كفالة تُقيَّد بحد أقصى لمبلغ الدين",
+                "كفالة يشترط فيها الرجوع على المدين قبل الكفيل"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'حق الكفيل في التجريد'؟",
+            options: [
+                "حق الكفيل في الامتناع عن الوفاء نهائياً إذا كان المدين معسراً",
+                "حق الكفيل في مطالبة الدائن بأن يستنفد أولاً أموال المدين الأصلي قبل الرجوع عليه",
+                "حق الكفيل في تجريد المدين من ملكية أمواله",
+                "حق الكفيل في الإفلات من الكفالة عند تغيُّر هوية المدين"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما أثر وفاء الكفيل بالدين كاملاً؟",
+            options: [
+                "تنقضي الكفالة وتنقضي جميع الحقوق",
+                "يحل الكفيل محل الدائن الأصلي بحكم القانون فيرجع على المدين بما أدّاه (الحلول القانوني)",
+                "يحق للكفيل الرجوع على الكفلاء الآخرين دون حاجة للرجوع على المدين",
+                "يتحول دين الكفيل تجاه المدين إلى دين ممتاز تلقائياً"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما شروط صحة الرهن الحيازي؟",
+            options: [
+                "أن يكون الراهن مالكاً للشيء المرهون وأن يُسلَّم للدائن وأن يكون الدين محدداً",
+                "أن يُقيَّد في السجل العقاري فقط",
+                "أن يكون المرهون عقاراً لا منقولاً",
+                "أن يوافق المدين الأصلي على الرهن خطياً"
+            ],
+            correctAnswer: 0
+        },
+        {
+            text: "ما المقصود بـ'الدائن المرتهن'؟",
+            options: [
+                "الدائن الذي قدَّم هو ذاته مالاً رهناً للمدين",
+                "الدائن الذي يستفيد من حق الرهن المقرَّر لصالحه على مال المدين أو الكفيل العيني",
+                "الدائن الحاصل على كفالة شخصية من طرف ثالث",
+                "الدائن الذي انتقل إليه حق الدين بطريق الحوالة"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بمبدأ 'عدم قابلية الرهن للتجزئة'؟",
+            options: [
+                "لا يجوز رهن جزء من العقار دون الجزء الآخر",
+                "يظل المال المرهون مثقلاً بكامل الرهن حتى الوفاء بآخر جزء من الدين",
+                "لا يجوز انتقال جزء من الرهن بالميراث",
+                "يجب أن يُقيَّد الرهن في وقت واحد لا على مراحل"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الذي يترتب على انقضاء الدين الأصلي بالنسبة للرهن؟",
+            options: [
+                "يبقى الرهن قائماً لمدة سنة تالية لانقضاء الدين",
+                "ينقضي الرهن تبعاً لانقضاء الدين الأصلي لأن الرهن عقد تبعي",
+                "يتحول الرهن إلى ملكية كاملة للمدين",
+                "ينقضي الرهن فقط بصدور حكم قضائي بشطبه"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الكفيل العيني'؟",
+            options: [
+                "الكفيل الذي يتعهد بشخصه بالوفاء بالدين",
+                "الشخص الذي يُقدِّم مالاً يملكه رهناً لضمان دين شخص آخر دون أن يلتزم شخصياً بالدين",
+                "الكفيل الذي يمتلك أموالاً عقارية فقط",
+                "الكفيل الذي تُساوي ثروته مبلغ الدين المضمون على الأقل"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الفرق بين الكفالة بالنفس والكفالة بالمال؟",
+            options: [
+                "الكفالة بالنفس تتعلق بضمان حضور شخص أمام الجهات المختصة، أما الكفالة بالمال فتتعلق بضمان الوفاء بدين مالي",
+                "لا فرق بينهما وكلتاهما كفالة مالية",
+                "الكفالة بالنفس أقوى من الكفالة بالمال من حيث الأثر القانوني",
+                "الكفالة بالنفس تستلزم التسجيل الرسمي دون الكفالة بالمال"
+            ],
+            correctAnswer: 0
+        },
+        {
+            text: "متى يحق للدائن التنفيذ على المال المرهون في الرهن الرسمي؟",
+            options: [
+                "فور توقيع عقد الرهن ودون الحاجة لحلول أجل الدين",
+                "بعد حلول أجل الدين وامتناع المدين عن الوفاء وصدور حكم أو بيع بالمزاد وفق الإجراءات القانونية",
+                "بمجرد إعذار المدين دون حاجة لحكم قضائي",
+                "عند تهديد المدين بالتصرف في المال المرهون فقط"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الرهن الاتفاقي'؟",
+            options: [
+                "رهن يثبت بقوة القانون دون اتفاق الطرفين",
+                "رهن يُنشأ بناءً على اتفاق الطرفين بخلاف الرهن القضائي أو القانوني",
+                "رهن يشترط لانعقاده صدور حكم قضائي",
+                "رهن يرد على المنقول فقط دون العقار"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما مدى انتقال الرهن عند نقل ملكية المال المرهون؟",
+            options: [
+                "ينقضي الرهن بمجرد نقل الملكية",
+                "يبقى الرهن متعلقاً بالمال المنتقل وللمرتهن حق التتبع والتنفيذ على المال في يد المشتري",
+                "يحل المشتري محل المدين بالدين المرهون به",
+                "ينتقل الرهن إلى أموال أخرى للمدين بديلاً عن المال المنتقل"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "أيٌّ من العبارات التالية صحيحة بشأن تعدد الكفلاء؟",
+            options: [
+                "كل كفيل يضمن الدين كاملاً وليس حصته فقط ما لم يتفق على خلاف ذلك",
+                "يُقسَّم الدين بين الكفلاء بالتساوي دائماً دون أي مسؤولية تضامنية",
+                "لا يُطالَب أيٌّ من الكفلاء بأكثر من حصته في الدين في جميع الأحوال",
+                "تضامن الكفلاء فيما بينهم يُلغي حقهم في الرجوع على المدين"
+            ],
+            correctAnswer: 0
+        },
+        {
+            text: "ما الشرط اللازم لانقضاء الكفالة بالإبراء؟",
+            options: [
+                "يجب أن يُبرئ الدائن المدين الأصلي فقط ليُبرأ الكفيل تبعاً",
+                "يجب أن يُبرئ الدائن الكفيل صراحةً أو يُبرئ المدين مما يستلزم إبراء الكفيل",
+                "يُشترط تحرير محرر رسمي لصحة الإبراء دائماً",
+                "لا يُعتد بالإبراء الشفهي في أي حال"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الرهن القضائي'؟",
+            options: [
+                "رهن ينشأ بحكم قضائي لمصلحة دائن حصل على حكم ضد مدينه",
+                "رهن يُعقد أمام القاضي ويشترط توثيقه قضائياً",
+                "رهن يرتبه القانون تلقائياً على أموال المدين المفلس",
+                "رهن تفرضه المحكمة على أموال شركة في طور التصفية"
+            ],
+            correctAnswer: 0
+        },
+        {
+            text: "ما الأثر القانوني لاشتراط الدائن عدم التصرف في المال المرهون؟",
+            options: [
+                "يُعدّ هذا الشرط باطلاً بطلاناً مطلقاً في جميع الأحوال",
+                "يصح الشرط ويُقيِّد حق الراهن في التصرف، وقد يُعطي الدائن حق الاعتراض على التصرفات الضارة",
+                "يُحوَّل الرهن إلى ملكية احتياطية للدائن",
+                "يُلزم الراهن بتقديم بديل عن المال المرهون فوراً"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الامتياز العام' بالمقارنة بـ'الامتياز الخاص'؟",
+            options: [
+                "الامتياز العام يرد على مال معين أما الامتياز الخاص فيرد على جميع أموال المدين",
+                "الامتياز العام يرد على جميع أموال المدين، بينما الامتياز الخاص يرد على مال معين بعينه",
+                "لا فرق بينهما من الناحية العملية",
+                "الامتياز العام يختص بالديون الحكومية فقط"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الحكم إذا تعارضت حقوق عدة دائنين ذوي ضمانات مختلفة على مال واحد؟",
+            options: [
+                "يتساوى الدائنون في الاستيفاء من ثمن المال بصرف النظر عن درجة ضمانهم",
+                "تُراعى أولويات محددة: حقوق الامتياز ثم الرهن الرسمي ثم الرهن الحيازي ثم الدائنون العاديون وفق القانون",
+                "يُقدَّم دائماً من تقدَّم تاريخ سند دينه",
+                "تُحسم الأولوية بالقرعة عند التعارض"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما أثر إفلاس المدين على حقوق الدائنين أصحاب الضمانات العينية؟",
+            options: [
+                "تسقط حقوقهم بالإفلاس ويُعاملون معاملة الدائنين العاديين",
+                "يحتفظون بحقوقهم العينية وأولويتهم في الاستيفاء من المال المرهون بعيداً عن التفليسة العامة",
+                "تُجمَّد حقوقهم حتى يُبتّ في حالة الإفلاس نهائياً",
+                "تتحول ضماناتهم العينية إلى ديون عادية في مواجهة جماعة الدائنين"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'شرط عدم القابلية للتجزئة' في الكفالة؟",
+            options: [
+                "لا يجوز للكفيل الوفاء بجزء من الدين المكفول",
+                "إذا تعدد الكفلاء ظلت كل واحد منهم مسؤولاً عن الدين كاملاً ما لم يُتفق على تجزئته",
+                "لا يجوز انتقال الكفالة إلى ورثة الكفيل بصفة جزئية",
+                "يجب وفاء الكفيل بالدين دفعةً واحدة لا على أقساط"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'حق الحبس' في الرهن الحيازي؟",
+            options: [
+                "حق المدين في استرداد المال المرهون قسراً من الدائن",
+                "حق الدائن المرتهن في الإبقاء على المال المرهون في حيازته حتى يستوفي دينه كاملاً",
+                "حق المدين في تأجيل الوفاء بالدين لحين البت القضائي",
+                "حق الدائن في حبس أشخاص المدين جبراً على الوفاء"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الشروط الموضوعية اللازمة لصحة عقد الكفالة؟",
+            options: [
+                "أهلية الكفيل، ورضاه، ووجود دين صحيح أصلي يُكفل، وأن يكون الدين قابلاً للكفالة",
+                "موافقة المدين الأصلي وإعلامه بالكفالة وإلا بطلت",
+                "أن تكون الكفالة مكتوبة موثقة في جميع الأحوال",
+                "أن يكون الكفيل مقيماً في ذات دولة الدائن"
+            ],
+            correctAnswer: 0
+        },
+        {
+            text: "ما المقصود بـ'الكفالة المحددة' بالمقارنة بـ'الكفالة المطلقة'؟",
+            options: [
+                "الكفالة المحددة تشمل الدين الأصلي والفوائد والمصاريف، أما المطلقة فتقتصر على أصل الدين",
+                "الكفالة المحددة تتعلق بدين بعينه أو بحد أقصى معلوم، أما المطلقة فتشمل جميع ديون المدين",
+                "لا فرق بينهما إذ تشملان معاً كل ما يستحق على المدين",
+                "الكفالة المطلقة هي التي تنعقد دون شرط، والمحددة هي المعلقة على شرط"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الأثر القانوني لانقضاء أجل الدين المضمون بكفالة على الكفيل؟",
+            options: [
+                "يستطيع الكفيل مطالبة الدائن بتأجيل الوفاء لمدة مساوية لما مُنح للمدين",
+                "يصبح الكفيل ملزماً بالوفاء فور حلول الأجل وامتناع المدين عن الأداء",
+                "لا يُطالَب الكفيل بالوفاء إلا بعد انقضاء ستة أشهر من حلول الأجل",
+                "تسقط الكفالة تلقائياً بحلول أجل الدين الأصلي"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما المقصود بـ'الضمان الاحتياطي' (Aval) في الأوراق التجارية؟",
+            options: [
+                "رهن يُقدَّم ضماناً لقيمة الورقة التجارية",
+                "ضمان شخصي يُكتب على الورقة التجارية ذاتها يتعهد بموجبه الضامن بالوفاء بقيمتها",
+                "اتفاق بين البنك والمدين على تقديم كفالة عينية",
+                "شرط في العقد يُلزم الطرف الآخر بتقديم ضمانات إضافية"
+            ],
+            correctAnswer: 1
+        },
+        {
+            text: "ما الأثر القانوني لبطلان الدين الأصلي على الكفالة؟",
+            options: [
+                "تبقى الكفالة صحيحة لأنها عقد مستقل",
+                "تبطل الكفالة تبعاً لبطلان الدين الأصلي لأنها عقد تبعي",
+                "تتحول الكفالة إلى رهن عيني بقوة القانون",
+                "يُعاقَب الكفيل بصحة الكفالة عقوبة على إبرامه عقداً مع دين باطل"
+            ],
+            correctAnswer: 1
+        }
+    ];
+ 
+    let currentQuestionIndex = 0; 
+    const answersState = new Array(questions.length).fill(false); 
+ 
+    const sidebar        = document.getElementById('sidebar');
+    const qNumberTitle   = document.getElementById('q-number-title');
+    const qText          = document.getElementById('q-text');
+    const qOptions       = document.getElementById('q-options');
+    const btnNext        = document.getElementById('btn-next');
+    const btnSkip        = document.getElementById('btn-skip');
+    const qStatsText     = document.getElementById('q-stats-text');
+    const questionProgressFill = document.getElementById('question-progress-fill');
+    const questionProgressText = document.getElementById('question-progress-text');
+    const timeStatsText  = document.getElementById('time-stats-text');
+    const timeSlider     = document.getElementById('time-slider');
+    const sliderLiveLabel = document.getElementById('slider-live-label');
+    const timeProgressFill = document.getElementById('time-progress-fill');
+    const timeProgressText = document.getElementById('time-progress-text');
+ 
+    const TOTAL_MINUTES = 120;
+    let remainingSeconds = TOTAL_MINUTES * 60;
+ 
+    function updateTimerDisplay() {
+        const mins = Math.floor(remainingSeconds / 60);
+        timeStatsText.textContent = `الوقت ${mins} / ${TOTAL_MINUTES} (دقيقة)`;
+ 
+        const elapsedSeconds = (TOTAL_MINUTES * 60) - remainingSeconds;
+        const percent = Math.min(100, Math.round((elapsedSeconds / (TOTAL_MINUTES * 60)) * 100));
+        timeProgressFill.style.width = percent + "%";
+        timeProgressText.textContent = percent + "%";
+ 
+        if (mins <= 5) {
+            timeStatsText.classList.add('time-warning');
+            timeProgressFill.style.backgroundColor = '#e05050';
+        } else {
+            timeStatsText.classList.remove('time-warning');
+            timeProgressFill.style.backgroundColor = '#4caf50';
+        }
+    }
+ 
+    const timerInterval = setInterval(() => {
+        if (remainingSeconds > 0) {
+            remainingSeconds--;
+            updateTimerDisplay();
+            if (!isDragging) {
+                timeSlider.value = Math.ceil(remainingSeconds / 60);
+                sliderLiveLabel.textContent = Math.ceil(remainingSeconds / 60) + ' دقيقة';
+            }
+        } else {
+            clearInterval(timerInterval);
+            timeStatsText.textContent = 'انتهى الوقت!';
+            timeStatsText.classList.add('time-warning');
+            timeProgressFill.style.width = '100%';
+            timeProgressText.textContent = '100%';
+        }
+    }, 1000);
+ 
+    let isDragging = false;
+ 
+    timeSlider.addEventListener('input', () => {
+        isDragging = true;
+        const newMins = parseInt(timeSlider.value);
+        sliderLiveLabel.textContent = newMins + ' دقيقة';
+    });
+ 
+    timeSlider.addEventListener('change', () => {
+        const newMins = parseInt(timeSlider.value);
+        remainingSeconds = newMins * 60;
+        updateTimerDisplay();
+        isDragging = false;
+    });
+ 
+    timeSlider.addEventListener('touchend', () => {
+        const newMins = parseInt(timeSlider.value);
+        remainingSeconds = newMins * 60;
+        updateTimerDisplay();
+        isDragging = false;
+    });
+ 
+    function loadQuestion(index) {
+        currentQuestionIndex = index;
+        const q = questions[index];
+        const displayIndex = index + 1; 
+ 
+        qNumberTitle.textContent = "س." + displayIndex;
+        qText.textContent = q.text;
+ 
+        qOptions.innerHTML = ''; 
+        q.options.forEach((option, i) => {
+            const label = document.createElement('label');
+            label.className = 'option';
+            label.innerHTML = `<input type="radio" name="answer" value="${i}"> ${option}`;
+            qOptions.appendChild(label);
+        });
+ 
+        updateSidebar();
+        updateStats();
+    }
+ 
+    function updateSidebar() {
+        sidebar.innerHTML = '';
+        for (let i = 0; i < questions.length; i++) {
+            const div = document.createElement('div');
+            div.className = 'q-number';
+            div.textContent = i + 1;
+            if (i === currentQuestionIndex) {
+                div.classList.add('q-blue'); 
+            } else if (answersState[i]) {
+                div.classList.add('q-green'); 
+            } else {
+                div.classList.add('q-gray'); 
+            }
+            div.onclick = () => loadQuestion(i); 
+            sidebar.appendChild(div);
+        }
+    }
+ 
+    function updateStats() {
+        const displayIndex = currentQuestionIndex + 1;
+        qStatsText.textContent = `الأسئلة ${displayIndex} / ${questions.length}`;
+        const progressPercent = Math.round((displayIndex / questions.length) * 100);
+        questionProgressFill.style.width = progressPercent + "%";
+        questionProgressText.textContent = progressPercent + "%";
+    }
+ 
+    btnNext.onclick = () => {
+        const selectedOption = document.querySelector('input[name="answer"]:checked');
+        if (selectedOption) {
+            answersState[currentQuestionIndex] = true; 
+        }
+        if (currentQuestionIndex < questions.length - 1) {
+            loadQuestion(currentQuestionIndex + 1); 
+        } else {
+            alert("لقد وصلت إلى نهاية الاختبار!");
+            updateSidebar(); 
+        }
+    };
+ 
+    btnSkip.onclick = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            loadQuestion(currentQuestionIndex + 1); 
+        } else {
+            alert("لا يوجد أسئلة أخرى لتخطيها.");
+        }
+    };
+ 
+    loadQuestion(0);
+</script>
+ 
+</body>
+</html>
